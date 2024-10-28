@@ -29,11 +29,11 @@ df_13 = all_datas[[13]]
 
 # Code for Dataset 1 ----------------------------------------------------------
 
-df_1$h_Other = df_1$h_Other /100
-df_1$a_Other = df_1$a_Other /100
-df_1$mpi_Other = df_1$mpi_Other + 0.0000000001
-df_1$h_Other = df_1$h_Other + 0.0000000001
-df_1$a_Other = df_1$a_Other + 0.0000000001
+df_1$h_Other = df_1$h_Other /100 #express in decimals
+df_1$a_Other = df_1$a_Other /100 #express in decimals
+df_1$mpi_Other = df_1$mpi_Other + 0.0000000001 #avoid zero value
+df_1$h_Other = df_1$h_Other + 0.0000000001 #avoid zero value
+df_1$a_Other = df_1$a_Other + 0.0000000001 #avoid zero value
 
 
 # MPI
@@ -49,11 +49,11 @@ rep_a_df1 = repetitions(df_1,target = "a_Other", corte=0.5,link_phi = "log", lin
 
 # Code for Dataset 2 ----------------------------------------------------------
 
-df_2$h_Other = df_1$h_Other /100
-df_2$a_Other = df_1$a_Other /100
-df_2$mpi_Other = df_1$mpi_Other + 0.0000000001
-df_2$h_Other = df_1$h_Other + 0.0000000001
-df_2$a_Other = df_1$a_Other + 0.0000000001
+df_2$h_Other = df_2$h_Other /100 #express in decimals
+df_2$a_Other = df_2$a_Other /100 #express in decimals
+df_2$mpi_Other = df_2$mpi_Other + 0.0000000001 #avoid zero value
+df_2$h_Other = df_2$h_Other + 0.0000000001 #avoid zero value
+df_2$a_Other = df_2$a_Other + 0.0000000001 #avoid zero value
 
 
 # MPI
@@ -70,11 +70,11 @@ rep_a_df2 = repetitions(df_2,target = "a_Other", corte=0.5,link_phi = "log", lin
 # Code for Dataset 13----------------------------------------------------------
 
 
-df_13$h_Other = df_1$h_Other /100
-df_13$a_Other = df_1$a_Other /100
-df_13$mpi_Other = df_1$mpi_Other + 0.0000000001
-df_13$h_Other = df_1$h_Other + 0.0000000001
-df_13$a_Other = df_1$a_Other + 0.0000000001
+df_13$h_Other = df_13$h_Other /100 #express in decimals
+df_13$a_Other = df_13$a_Other /100 #express in decimals
+df_13$mpi_Other = df_13$mpi_Other + 0.0000000001 #avoid zero value
+df_13$h_Other = df_13$h_Other + 0.0000000001 #avoid zero value
+df_13$a_Other = df_13$a_Other + 0.0000000001 #avoid zero value
 
 
 # MPI

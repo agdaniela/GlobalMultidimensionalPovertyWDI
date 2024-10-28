@@ -99,14 +99,6 @@ errors = graph_data_errors(rep_mpi_df1)
 errors_graph = reshape2::melt(errors[,c(1:8)])
 names(errors_graph) = c("Methods","MSE")
 
-# ggplot(data = errors_graph, aes(x=Methods, y=MSE)) +
-#   geom_boxplot(aes(fill=Methods))+ 
-#   ylim(-0.0001, 0.03) +
-#   scale_x_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )+
-#   scale_fill_discrete(name = "",labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )+
-#   guides(linetype = "none")
-
- 
 # Plot
 ggplot(data = errors_graph, aes(x = Methods, y = MSE)) +
   geom_boxplot(aes(fill = Methods)) + 

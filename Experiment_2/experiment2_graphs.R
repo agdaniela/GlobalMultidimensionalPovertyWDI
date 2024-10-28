@@ -1,57 +1,45 @@
+# Libraries ---------------------------------------------------------------
+
 library(dplyr)
 library(ggplot2)
 
 
-#######################################################################
-#EXPERIMENTO 2
-#######################################################################
-#TABLAS
-
-# df2
-predichos10 = readRDS("predichos_mpi.Rdata")
-predichos_a = readRDS("predichos_a.Rdata")
-predichos_h = readRDS("predichos_h.Rdata")
-# df1
-predichos_mpi_df1 = readRDS("predichos_mpi_df1.Rdata")
-predichos_a_df1 = readRDS("predichos_a_df1.Rdata")
-predichos_h_df1 = readRDS("predichos_h_df1.Rdata")
-# df13
-predichos_mpi_df13 = readRDS("predichos_mpi_df13.Rdata")
-predichos_a_df13 = readRDS("predichos_a_df13.Rdata")
-predichos_h_df13 = readRDS("predichos_h_df13.Rdata")
-
-lapply(9:16, function(x) predichos10[[1]]$results[x])
-
-lapply(1:10, function(y) lapply(9:16, function(x) predichos10[[y]]$results[x]))
-
-lapply(1:10, function(y) lapply(9:16, function(x) predichos10[[y]]$predicted[x]))
-
-l = lapply(1:10, function(y) lapply(9:16, function(x) predichos10[[y]]$results[x]))
-dists_fold = data.frame(matrix(unlist(l), nrow=length(l), byrow=TRUE))
-colnames(dists_fold) = c("dist pls_tc", 
-                         "dist beta_tc_cr",
-                         "dist beta_tc_tree_cr","dist elastic_tc",     "dist beta_tc_ela",              "dist beta_tc_tree_ela",                         "dist xgb_tc",
-                         "dist betaboost_tc" )
-sapply(dists_fold, function(x) mean(na.omit(x)))
-
-combis = rbind(sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds$y_test)$y,density(folds[,x])$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE))), sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds$y_test, from=0,to=1)$y,density(folds[,x], from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE))), sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds$y_test, from=0,to=1)$y,density(folds[,x])$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE))),sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds$y_test)$y,density(folds[,x], from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE))))
-#recalculating distances
-#df2
-colnames(folds)[35:43]
-as.numeric(philentropy::distance(rbind(density(folds$y_test, from = 0,to = 1,)$y,density(folds$yhat.pls_tc,from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE))
-as.numeric(philentropy::distance(rbind(density(folds$y_test, from = 0,to = 1,)$y,density(folds[,36],from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE))
-
-# MPI
-#df2  
-dist_mpi_df2 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds$y_test, from = 0,to = 1,)$y,density(folds[,x],from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
-as.numeric(philentropy::distance(rbind(density(folds$y_test, from = 0,to = 1,)$y,density(folds[,40],from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE))
+# Load Results ------------------------------------------------------------------
 
 
-# df1 
+# Dataset 1
+df_fold_1 = readRDS("Experiment_2/df_fold_1.Rdata")
+predichos_mpi_df1 = readRDS("Experiment_2/predicted_mpi_df1.Rdata")
+predichos_a_df1 = readRDS("Experiment_2/predicted_a_df1.Rdata")
+predichos_h_df1 = readRDS("Experiment_2/predicted_df1.Rdata")
+
+# Dataset 2
+df_fold_2 = readRDS("Experiment_2/df_fold.Rdata")
+predicted_mpi_df2 = readRDS("Experiment_2/predicted_mpi_df2.Rdata")
+predicted_a_df2 = readRDS("Experiment_2/predicted_a_df2.Rdata")
+predicted_h_df2 = readRDS("Experiment_2/predicted_h_df2.Rdata")
+
+# Dataset 13
+df_fold__13 = readRDS("Experiment_2/df_fold_13.Rdata")
+predichos_mpi_df13 = readRDS("Experiment_2/predicted_mpi_df13.Rdata")
+predichos_a_df13 = readRDS("Experiment_2/predicted_a_df13.Rdata")
+predichos_h_df13 = readRDS("Experiment_2/predicted_h_df13.Rdata")
+
+
+
+# Tables ------------------------------------------------------------------
+
+# Distances for MPI
+
+# Dataset 1 
 folds_df1 = graph_data(df_1, predichos_mpi_df1)
 dist_mpi_df1 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_df1$y_test, from = 0,to = 1,)$y,density(na.omit(folds_df1[,x]),from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
 
-# df13 
+# Dataset 2   
+dist_mpi_df2 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds$y_test, from = 0,to = 1,)$y,density(folds[,x],from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
+as.numeric(philentropy::distance(rbind(density(folds$y_test, from = 0,to = 1,)$y,density(folds[,40],from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE))
+
+# Dataset 13
 folds_df13 = graph_data(df_13, predichos_mpi_df13)
 dist_mpi_df13 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_df13$y_test, from = 0,to = 1,)$y,density(na.omit(folds_df13[,x]),from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
 
