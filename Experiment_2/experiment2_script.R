@@ -21,59 +21,124 @@ source("./main_function/main_function_exp2.R")
 
 all_datas = readRDS("Experiment_2/all_datasets.Rdata") 
 
-# Load dataset ----------------------------------------------------------
+# Load datasets ----------------------------------------------------------
 
-df_fold = all_datas[[2]]
- 
-# Code for experiment 2 - Dataset 2 ----------------------------------------------------------
+df_fold_1 = all_datas[[1]]
+df_fold_2 = all_datas[[2]]
+df_fold_13 = all_datas[[13]]
+
+
+# Function for predicting in each fold ------------------------------------------------------
+
+#' @param df Dataset for spliting into folds
+#' @param nfolds Number of folds
+#' @param indexes Index for spliting into folds
+#' @param param Target variable ("mpi_Other","h_Other","a_Other")
+#' @param cut Parameter for beta-tree models
+#' 
+#' @return a list with predicted values and evaluation metrics for each fold  
+
+predicted_exp2 = function(df, nfolds, indexes, param, cut){
+  predicted_list = list()
+  if (param == "mpi_Other") {
+    prefix <- "yhats"
+  } else if (param == "h_Other") {
+    prefix <- "hhats"
+  } else {
+    prefix <- "ahats"
+  }
+  
+  for(i in 1:nfolds){
+    testIndexes <- which(indexes == i,arr.ind=TRUE)
+    testData <- df[testIndexes, ]
+    trainData <- df[-testIndexes, ]
+    
+    name <- paste(prefix, i, sep="_")
+    predicted_list[[name]] = main_function_exp2(trainData,testData,param, corte=cut, link_phi = "log", link_mu = "logit", distancia = "hellinger")
+  }
+  return(predicted_list) 
+}
+
+
+# Code for Dataset 1 ------------------------------------------------------
 
 # Creating folds
-df_fold$h_Other = df_fold$h_Other /100 #express in decimals
-df_fold$a_Other = df_fold$a_Other /100 #express in decimals
-df_fold$mpi_Other = df_fold$mpi_Other + 0.0000000001 #avoid zero value
-df_fold$h_Other = df_fold$h_Other + 0.0000000001 #avoid zero value
-df_fold$a_Other = df_fold$a_Other + 0.0000000001 #avoid zero value
+df_fold_1$h_Other = df_fold_1$h_Other /100 #express in decimals
+df_fold_1$a_Other = df_fold_1$a_Other /100 #express in decimals
+df_fold_1$mpi_Other = df_fold_1$mpi_Other + 0.0000000001 #avoid zero value
+df_fold_1$h_Other = df_fold_1$h_Other + 0.0000000001 #avoid zero value
+df_fold_1$a_Other = df_fold_1$a_Other + 0.0000000001 #avoid zero value
 
-df_fold  <- df_fold[sample(nrow(df_fold)),]
+df_fold_1  <- df_fold_1[sample(nrow(df_fold_1)),]
 
-folds_index <- cut(seq(1,nrow(df_fold)),breaks=10,labels=FALSE) 
+folds_index_1 <- cut(seq(1,nrow(df_fold_1)),breaks=10,labels=FALSE) 
 
 # Predicted values for MPI
 
-predicted_mpi = list()
-for(i in 1:10){
-  testIndexes <- which(folds_index == i,arr.ind=TRUE)
-  testData <- df_fold[testIndexes, ]
-  trainData <- df_fold[-testIndexes, ]
-  name <- paste("yhats", i, sep="_")
-  predicted_mpi[[name]] = main_function_exp2(trainData,testData,"mpi_Other", corte=0.2, link_phi = "log", link_mu = "logit", distancia = "hellinger")
-}
+predicted_mpi_df1 = predicted_exp2(df_fold_1, 10, folds_index_1, "mpi_Other", cut =0.2)
  
 # Predicted values for A
 
-predicted_a = list()
-for(i in 1:10){
-  testIndexes <- which(folds_index == i,arr.ind=TRUE)
-  testData <- df_fold[testIndexes, ]
-  trainData <- df_fold[-testIndexes, ]
-  name <- paste("ahats", i, sep="_")
-  predicted_a[[name]] = main_function_exp2(trainData,testData,"a_Other", corte=0.5, link_phi = "log", link_mu = "logit", distancia = "hellinger")
-}
+predicted_a_df1 = predicted_exp2(df_fold_1, 10, folds_index_1, "a_Other", cut =0.5)
 
 # Predicted values for H
 
-predicted_h = list()
-for(i in 1:10){
-  testIndexes <- which(folds_index == i,arr.ind=TRUE)
-  testData <- df_fold[testIndexes, ]
-  trainData <- df_fold[-testIndexes, ]
-  name <- paste("hhats", i, sep="_")
-  predicted_h[[name]] = main_function_exp2(trainData,testData,"h_Other", corte=0.2, link_phi = "log", link_mu = "logit", distancia = "hellinger")
-}
+predicted_h_df1 = predicted_exp2(df_fold_1, 10, folds_index_1, "h_Other", cut =0.2)
+
+
+# Code for Dataset 2 ----------------------------------------------------------
+
+# Creating folds
+df_fold_2$h_Other = df_fold_2$h_Other /100 #express in decimals
+df_fold_2$a_Other = df_fold_2$a_Other /100 #express in decimals
+df_fold_2$mpi_Other = df_fold_2$mpi_Other + 0.0000000001 #avoid zero value
+df_fold_2$h_Other = df_fold_2$h_Other + 0.0000000001 #avoid zero value
+df_fold_2$a_Other = df_fold_2$a_Other + 0.0000000001 #avoid zero value
+
+df_fold_2  <- df_fold_2[sample(nrow(df_fold_2)),]
+
+folds_index_2 <- cut(seq(1,nrow(df_fold_2)),breaks=10,labels=FALSE) 
+
+# Predicted values for MPI
+
+predicted_mpi_df2 = predicted_exp2(df_fold_2, 10, folds_index_2, "mpi_Other", cut =0.2)
+
+# Predicted values for A
+
+predicted_a_df2 = predicted_exp2(df_fold_2, 10, folds_index_2, "a_Other", cut =0.5)
+
+# Predicted values for H
+
+predicted_h_df2 = predicted_exp2(df_fold_2, 10, folds_index_2, "h_Other", cut =0.2)
+ 
+
+# Code for Dataset 13 -----------------------------------------------------
+
+# Creating folds
+df_fold_13$h_Other = df_fold_13$h_Other /100 #express in decimals
+df_fold_13$a_Other = df_fold_13$a_Other /100 #express in decimals
+df_fold_13$mpi_Other = df_fold_13$mpi_Other + 0.0000000001 #avoid zero value
+df_fold_13$h_Other = df_fold_13$h_Other + 0.0000000001 #avoid zero value
+df_fold_13$a_Other = df_fold_13$a_Other + 0.0000000001 #avoid zero value
+
+df_fold_13  <- df_fold_13[sample(nrow(df_fold_13)),]
+
+folds_index_13 <- cut(seq(1,nrow(df_fold_13)),breaks=10,labels=FALSE) 
+
+# Predicted values for MPI
+
+predicted_mpi_df13 =  predicted_exp2(df_fold_13, 10, folds_index_13, "mpi_Other", cut =0.2)
+
+# Predicted values for A
+
+predicted_a_df13 = predicted_exp2(df_fold_13, 10, folds_index_13, "a_Other", cut =0.5)
+ 
+# Predicted values for H
+
+predicted_h_df13 = predicted_exp2(df_fold_13, 10, folds_index_13, "h_Other", cut =0.2)
+
 
  
+
+
  
-
-
-
-

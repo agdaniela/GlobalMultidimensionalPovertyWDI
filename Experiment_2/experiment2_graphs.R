@@ -9,9 +9,9 @@ library(ggplot2)
 
 # Dataset 1
 df_fold_1 = readRDS("Experiment_2/df_fold_1.Rdata")
-predichos_mpi_df1 = readRDS("Experiment_2/predicted_mpi_df1.Rdata")
-predichos_a_df1 = readRDS("Experiment_2/predicted_a_df1.Rdata")
-predichos_h_df1 = readRDS("Experiment_2/predicted_df1.Rdata")
+predicted_mpi_df1 = readRDS("Experiment_2/predicted_mpi_df1.Rdata")
+predicted_a_df1 = readRDS("Experiment_2/predicted_a_df1.Rdata")
+predicted_h_df1 = readRDS("Experiment_2/predicted_h_df1.Rdata")
 
 # Dataset 2
 df_fold_2 = readRDS("Experiment_2/df_fold.Rdata")
@@ -20,117 +20,14 @@ predicted_a_df2 = readRDS("Experiment_2/predicted_a_df2.Rdata")
 predicted_h_df2 = readRDS("Experiment_2/predicted_h_df2.Rdata")
 
 # Dataset 13
-df_fold__13 = readRDS("Experiment_2/df_fold_13.Rdata")
-predichos_mpi_df13 = readRDS("Experiment_2/predicted_mpi_df13.Rdata")
-predichos_a_df13 = readRDS("Experiment_2/predicted_a_df13.Rdata")
-predichos_h_df13 = readRDS("Experiment_2/predicted_h_df13.Rdata")
+df_fold_13 = readRDS("Experiment_2/df_fold_13.Rdata")
+predicted_mpi_df13 = readRDS("Experiment_2/predicted_mpi_df13.Rdata")
+predicted_a_df13 = readRDS("Experiment_2/predicted_a_df13.Rdata")
+predicted_h_df13 = readRDS("Experiment_2/predicted_h_df13.Rdata")
 
 
+#  Helping function for Tables and Plots ------------------------------------------------------
 
-# Tables ------------------------------------------------------------------
-
-# Distances for MPI
-
-# Dataset 1 
-folds_df1 = graph_data(df_1, predichos_mpi_df1)
-dist_mpi_df1 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_df1$y_test, from = 0,to = 1,)$y,density(na.omit(folds_df1[,x]),from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
-
-# Dataset 2   
-dist_mpi_df2 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds$y_test, from = 0,to = 1,)$y,density(folds[,x],from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
-as.numeric(philentropy::distance(rbind(density(folds$y_test, from = 0,to = 1,)$y,density(folds[,40],from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE))
-
-# Dataset 13
-folds_df13 = graph_data(df_13, predichos_mpi_df13)
-dist_mpi_df13 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_df13$y_test, from = 0,to = 1,)$y,density(na.omit(folds_df13[,x]),from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
-
-# A
-#df2  
-dist_a_df2 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_a$y_test, from = 0.3,to = 1,)$y,density(folds_a[,x],from=0.3,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
-
-# df1 
-folds_a_df1 = graph_data(df_1, predichos_a_df1)
-dist_a_df1 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_a_df1$y_test, from = 0.3,to = 1,)$y,density(na.omit(folds_a_df1[,x]),from=0.3,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
-
-# df13 
-folds_a_df13 = graph_data(df_13, predichos_a_df13)
-dist_a_df13 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_a_df13$y_test, from = 0.3,to = 1,)$y,density(na.omit(folds_a_df13[,x]),from=0.3,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
-
-# H
-#df2  
-dist_h_df2 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_h$y_test, from = 0,to = 1,)$y,density(na.omit(folds_h[,x]),from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
-
-# df1 
-folds_h_df1 = graph_data(df_1, predichos_h_df1)
-dist_h_df1 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_h_df1$y_test, from = 0,to = 1,)$y,density(na.omit(folds_h_df1[,x]),from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
-
-# df13 
-folds_h_df13 = graph_data(df_13, predichos_h_df13)
-dist_h_df13 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_h_df13$y_test, from = 0,to = 1,)$y,density(na.omit(folds_h_df13[,x]),from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
-
-
-tabla_exp2 = function(lista, df){
-  results = data.frame()
-  for (i in 1:10) {
-    res = lista[[i]]$results
-    results = rbind(results, res)
-    average = sapply(results, function(x) mean(na.omit(x)))
-    average$n = nrow(df)
-    average$p = length(colnames(df)[!((colnames(df) %in% c(colnames(df)[1:33])))])
-    average$Total.de.paises = length(unique(df$iso))
-    
-  }
-  return(average)
-}
-
-
-#mpi
-View(cbind(tabla_exp2(predichos_mpi_df1,df_1),tabla_exp2(predichos10,df),tabla_exp2(predichos_mpi_df13,df_13)))
-results_mpi = data.frame(cbind(tabla_exp2(predichos_mpi_df1,df_1),tabla_exp2(predichos10,df),tabla_exp2(predichos_mpi_df13,df_13)))
-colnames(results_mpi) = c("df1","df2","df13")
-
-cbind(dist_mpi_df1,dist_mpi_df2,dist_mpi_df13)
-
-results_mpi[9:16,] = cbind(dist_mpi_df1,dist_mpi_df2,dist_mpi_df13)
-
-results_a = data.frame(cbind(tabla_exp2(predichos_a_df1,df_1),tabla_exp2(predichos_a,df),tabla_exp2(predichos_a_df13,df_13)))
-colnames(results_a) = c("df1","df2","df13")
-results_a[9:16,] = cbind(dist_a_df1,dist_a_df2,dist_a_df13)
-
-results_h = data.frame(cbind(tabla_exp2(predichos_h_df1,df_1),tabla_exp2(predichos_h,df),tabla_exp2(predichos_h_df13,df_13)))
-colnames(results_h) = c("df1","df2","df13")
-results_h[9:16,] = cbind(dist_h_df1,dist_h_df2,dist_h_df13)
-
-xtable::xtable(results_mpi, digits = 4)
-xtable::xtable(results_a, digits = 4)
-xtable::xtable(results_h, digits = 4)
-
-#######################################################################
-#PLOTS
-#######################################################################
-
-
-
-
-best_methods = function(lista){
-  results = data.frame()
-  for (i in 1:10) {
-    res = lista[[i]]$results
-    results = rbind(results, res)
-  }
-  average = sapply(results, function(x) mean(x))
-  average = average[-c(21:23)]
-  best_mse = names(average[which.min(average[c(1:8)])])
-  worst_mse = names(average[which.max(average[c(1:8)])])
-  best_dist = names(average[c(9:17)])[which.min(average[c(9:17)])]
-  worst_dist = names(average[c(9:17)])[which.max(average[c(9:17)])]
-  print(paste("best mse = ",best_mse))
-  print(paste("worst mse = ",worst_mse))
-  print(paste("best dist = ",best_dist))
-  print(paste("worst dist = ",worst_dist))
-  return(average)
-}
-
-best_methods(predichos10)
 
 graph_data = function(df, lista){
   predicted = data.frame()
@@ -151,52 +48,85 @@ graph_data = function(df, lista){
 }
 
 
+# Tables ------------------------------------------------------------------
 
-plot_data = function(df, division){
-  
-  data_plot = df
-  
-  # choose methods by comment
-  
-  data_plot$yhat.pls_tc = NULL
-  data_plot$yhat.beta_tc_cr = NULL
-  data_plot$yhat.beta_tc_tree_cr = NULL
-  
-  data_plot$yhat.elastic_tc = NULL
-  data_plot$yhat.beta_tc_ela = NULL
-  data_plot$yhat.beta_tc_tree_ela= NULL
-  
-  
-  #data_plot$yhat.xgb_tc = NULL
-  #data_plot$yhat.betaboost_tc = NULL
-  
-  ######################################
-  
-  if (division == "region"){
-    data_plot = data_plot[,c(3,34:ncol(data_plot))]
-    data_plot$year_trend = NULL  
-    data_plot = reshape2::melt(data_plot,id.vars = "region_Other")
-    
-    
-  } else {
-    data_plot = data_plot[,c(1,35:ncol(data_plot))]
-    data_plot = reshape2::melt(data_plot, id.vars = "iso_Other")
+# Distances for MPI
+
+# Dataset 1 
+folds_df1 = graph_data(df_fold_1, predicted_mpi_df1)
+dist_mpi_df1 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_df1$y_test, from = 0,to = 1,)$y,density(na.omit(folds_df1[,x]),from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
+
+# Dataset 2   
+folds_df2 = graph_data(df_fold_2, predicted_mpi_df2)
+dist_mpi_df2 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_df2$y_test, from = 0,to = 1,)$y,density(folds_df2[,x],from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
+
+# Dataset 13
+folds_df13 = graph_data(df_fold_13, predicted_mpi_df13)
+dist_mpi_df13 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_df13$y_test, from = 0,to = 1,)$y,density(na.omit(folds_df13[,x]),from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
+
+# Distances for A
+
+# Dataset 1
+folds_a_df1 = graph_data(df_fold_1, predicted_a_df1)
+dist_a_df1 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_a_df1$y_test, from = 0.3,to = 1,)$y,density(na.omit(folds_a_df1[,x]),from=0.3,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
+
+# Dataset 2
+folds_a_df2 = graph_data(df_fold_2, predicted_a_df2)
+dist_a_df2 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_a_df2$y_test, from = 0.3,to = 1,)$y,density(folds_a_df2[,x],from=0.3,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
+
+# Dataset 13 
+folds_a_df13 = graph_data(df_fold_13, predicted_a_df13)
+dist_a_df13 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_a_df13$y_test, from = 0.3,to = 1,)$y,density(na.omit(folds_a_df13[,x]),from=0.3,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
+
+# Distances for H
+
+# Dataset 1
+folds_h_df1 = graph_data(df_fold_1, predicted_h_df1)
+dist_h_df1 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_h_df1$y_test, from = 0,to = 1,)$y,density(na.omit(folds_h_df1[,x]),from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
+
+# Dataset 2
+folds_h_df2 = graph_data(df_fold_2, predicted_h_df2)
+dist_h_df2 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_h_df2$y_test, from = 0,to = 1,)$y,density(na.omit(folds_h_df2[,x]),from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
+
+# Dataset 13
+folds_h_df13 = graph_data(df_fold_13, predicted_h_df13)
+dist_h_df13 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_h_df13$y_test, from = 0,to = 1,)$y,density(na.omit(folds_h_df13[,x]),from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
+
+
+tabla_exp2 = function(lista, df){
+  results = data.frame()
+  for (i in 1:10) {
+    res = lista[[i]]$results
+    results = rbind(results, res)
+    average = sapply(results, function(x) mean(na.omit(x)))
+    average$n = nrow(df)
+    average$p = length(colnames(df)[!((colnames(df) %in% c(colnames(df)[1:33])))])
+    average$Total.de.paises = length(unique(df$iso))
     
   }
-  
-  
-  return(data_plot)
+  return(average)
 }
 
 
-##################################################################
-#PLOTS
+results_mpi = data.frame(cbind(tabla_exp2(predicted_mpi_df1,df_fold_1),tabla_exp2(predicted_mpi_df2,df_fold_2),tabla_exp2(predicted_mpi_df13,df_fold_13)))
+colnames(results_mpi) = c("df1","df2","df13")
+results_mpi[9:16,] = cbind(dist_mpi_df1,dist_mpi_df2,dist_mpi_df13)
 
-# Preparamos los datos
-df = datas[[2]]
-folds = graph_data(df, predichos10)
+results_a = data.frame(cbind(tabla_exp2(predicted_a_df1,df_fold_1),tabla_exp2(predicted_a_df2,df_fold_2),tabla_exp2(predicted_a_df13,df_fold_13)))
+colnames(results_a) = c("df1","df2","df13")
+results_a[9:16,] = cbind(dist_a_df1,dist_a_df2,dist_a_df13)
 
-# Densidades y vs yhat  
+results_h = data.frame(cbind(tabla_exp2(predicted_h_df1,df_fold_1),tabla_exp2(predicted_h_df2,df_fold_2),tabla_exp2(predicted_h_df13,df_fold_13)))
+colnames(results_h) = c("df1","df2","df13")
+results_h[9:16,] = cbind(dist_h_df1,dist_h_df2,dist_h_df13)
+
+
+
+# Plots for Dataset 2 -----------------------------------------------------
+ 
+folds = folds_df2
+
+# Densities  
 data_plot_all = plot_data(folds, "none")
 
 theme_set(
@@ -224,93 +154,167 @@ theme_set(
     )
 )
 
+
+# Linear Methods ----------------------------------------------------------
+
+plot_data = function(df, division){
+  
+  data_plot = df
+  
+  # choose methods by comment
+  
+  #data_plot$yhat.pls_tc = NULL
+  #data_plot$yhat.beta_tc_cr = NULL
+  #data_plot$yhat.beta_tc_tree_cr = NULL
+  
+  data_plot$yhat.elastic_tc = NULL
+  data_plot$yhat.beta_tc_ela = NULL
+  data_plot$yhat.beta_tc_tree_ela= NULL
+  
+  
+  data_plot$yhat.xgb_tc = NULL
+  data_plot$yhat.betaboost_tc = NULL
+  
+  ######################################
+  
+  if (division == "region"){
+    data_plot = data_plot[,c(3,34:ncol(data_plot))]
+    data_plot$year_trend = NULL  
+    data_plot = reshape2::melt(data_plot,id.vars = "region_Other")
+    
+    
+  } else {
+    data_plot = data_plot[,c(1,35:ncol(data_plot))]
+    data_plot = reshape2::melt(data_plot, id.vars = "iso_Other")
+    
+  }
+  
+  
+  return(data_plot)
+}
+
+
+# Plot for A
+folds_a = folds_a_df2
+data_plot_a = plot_data(folds_a,"none")
+ 
+densities_plot_A = ggplot(data_plot_a, aes(x=value, color = variable,linetype = variable))  +
+  geom_density(lwd = 1) 
+
+densities_plot_A + 
+  labs(x = "A", y = "Density", color = "") +
+  xlim(0.32, 1) +
+  #scale_y_discrete(labels = c("A-true","Linear-PLS","Beta-PLS","Beta-Tree-PLS"))+
+  scale_color_manual(
+    values = c("#D30000","#B2DCEB", "#68B5D2", "#4196B6"),
+    labels = c("A-true", "Linear-PLS", "Beta-PLS", "Beta-Tree-PLS")  # Custom labels for the legend
+  ) +
+    guides(linetype = "none")
+
+ 
+# Plot for H
+folds_h = folds_h_df2
+data_plot_h = plot_data(folds_h,"none")
+ 
+densities_plot_H = ggplot(data_plot_h, aes(x=value, color = variable,linetype = variable))  +
+  geom_density(lwd = 1) 
+
+densities_plot_H + 
+  labs(x = "H", y = "Density", color = "") +
+  scale_color_manual(
+    values = c("#D30000","#B2DCEB", "#68B5D2", "#4196B6"),
+    labels = c("A-true", "Linear-PLS", "Beta-PLS", "Beta-Tree-PLS")  # Custom labels for the legend
+  ) +
+  #scale_color_discrete(labels = c("H-true","Linear-PLS","Beta-PLS","Beta-Tree-PLS"))+
+  guides(linetype = "none")
+
+
+# Plot for MPI  HXA
+
+
+# Y-hat A*H
+ 
+A_hat = folds_a_df2
+A_hat = A_hat[,35:43]
+H_hat = folds_h_df2
+H_hat = H_hat[,35:43]
+MPI_hat_hxa = A_hat * H_hat 
+ 
+data_plot_hxa = reshape2::melt(MPI_hat_hxa[,c(1,2,3,4)])
+ 
+densities_plot = ggplot(data_plot_hxa, aes(x=value, color = variable,linetype = variable))  +
+  geom_density(lwd = 1) 
+
+densities_plot + 
+  labs(x = "MPI (HxA)", y = "Density", color = "") +
+  xlim(-.001, 1) +
+  #scale_color_discrete(labels = c("HxA-true","Linear-PLS","Beta-PLS","Beta-Tree-PLS"))+
+  scale_color_manual(
+    values = c("#D30000","#B2DCEB", "#68B5D2", "#4196B6"),
+    labels = c("A-true", "Linear-PLS", "Beta-PLS", "Beta-Tree-PLS")  # Custom labels for the legend
+  ) +
+  guides(linetype = "none")
+
+# Plot for MPI
+
+folds = folds_df2
+data_plot_all = plot_data(folds, "none")
+ 
 densities_plot = ggplot(data_plot_all, aes(x=value, color = variable,linetype = variable))  +
   geom_density(lwd = 1) 
 
 densities_plot + 
   labs(x = "MPI", y = "Density", color = "") +
   xlim(-.001, 1) +
-  scale_color_discrete(labels = c("Ytrue","Elastic Net","Beta (elastic)","Beta-Tree (elastic)"))+
+  #scale_color_discrete(labels = c("Ytrue","Linear-PLS","Beta-PLS","Beta-Tree-PLS"))+
+  scale_color_manual(
+    values = c("#D30000","#B2DCEB", "#68B5D2", "#4196B6"),
+    labels = c("A-true", "Linear-PLS", "Beta-PLS", "Beta-Tree-PLS")  # Custom labels for the legend
+  ) +
   guides(linetype = "none")
 
 
-# Histogramas
-my_strip_labels <- as_labeller(c(
-  "y_test" = "Ytrue",
-  "yhat.pls_tc" = "Linear-PLS",
-  "yhat.beta_tc_cr" = "Beta-PLS"
-))
 
-my_strip_labels <- as_labeller(c(
-  "y_test" = "Ytrue",
-  "yhat.elastic_tc" = "elastic",
-  "yhat.beta_tc_ela" = "beta ela",
-  "yhat.beta_tree_tc_cr" = "beta tree ela"
-))
+# Variable Selection Methods ----------------------------------------------
 
-
-ggplot(data_plot_all, aes(value, fill = variable)) +
-  geom_histogram(aes(y = after_stat(density * width)), position = "identity", alpha = 0.5, show.legend = F) +
-  labs(x = "", y = "Relative Frequency", color = "")+
-  xlim(-.001, 0.75) +
-  facet_wrap(~ variable,
-             labeller = my_strip_labels,  # add labels
-             strip.position = "bottom") +
-  theme(
-    strip.placement = "outside",
-    strip.text.x = element_text(
-      size = 18, color = "black"),
-    strip.background = element_blank(),
-    panel.border = element_rect(fill = "transparent", # Necesario para agregar el borde
-                                color = "black", linewidth = 0.5)
-  )
-
-
-
-
-# #histograms
-# #FA
-# ggplot(data_plot_all, aes(x=value, fill = (variable)))+
-#   geom_histogram( color='#e9ecef', alpha=0.6, position='identity')
-# 
-# #FR
-# ggplot(data_plot_all, aes(value, fill = variable)) +
-#   geom_histogram(aes(y = after_stat(density * width)),
-#                  position = "identity", alpha = 0.5)
-# 
-# ggplot(data_plot_all, aes(value, fill = variable)) +
-#   geom_histogram(aes(y = after_stat(density * width)), position = "identity", alpha = 0.5) +
-#   facet_wrap(~ variable)
-# #> `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+plot_data = function(df, division){
+  
+  data_plot = df
+  
+  # choose methods by comment
+  
+  data_plot$yhat.pls_tc = NULL
+  data_plot$yhat.beta_tc_cr = NULL
+  data_plot$yhat.beta_tc_tree_cr = NULL
+  
+  #data_plot$yhat.elastic_tc = NULL
+  #data_plot$yhat.beta_tc_ela = NULL
+  #data_plot$yhat.beta_tc_tree_ela= NULL
+  
+  
+  data_plot$yhat.xgb_tc = NULL
+  data_plot$yhat.betaboost_tc = NULL
+  
+  ######################################
+  
+  if (division == "region"){
+    data_plot = data_plot[,c(3,34:ncol(data_plot))]
+    data_plot$year_trend = NULL  
+    data_plot = reshape2::melt(data_plot,id.vars = "region_Other")
+    
+    
+  } else {
+    data_plot = data_plot[,c(1,35:ncol(data_plot))]
+    data_plot = reshape2::melt(data_plot, id.vars = "iso_Other")
+    
+  }
+  
+  
+  return(data_plot)
+}
 
 
-
-
-# negative values on predictions
-sapply(1:ncol(folds), function(x) nrow(folds[folds[,x]<0,]))
-colnames(folds)[c(36,40,46,50)]
-
-sapply(sign(folds[,36:ncol(folds)]), function(x) table(factor(x, levels=c(-1,0,1))))
-
-
-
-
-#################################################
-# Densidades por region  
-
-data_plot_reg = plot_data(folds,"region")
-
-ggplot(data_plot_reg, aes(x=value, color = variable)) + 
-  geom_density(lwd = 1, linetype = 1) +
-  facet_wrap(~region_Other, scales = "free")
-
-
-
-################################################
-#ELASTIC
-################################################
-#A
-folds_a = graph_data(df,predichos_a)
+# Plot for A
 data_plot_a = plot_data(folds_a,"none")
 
 densities_plot_A = ggplot(data_plot_a, aes(x=value, color = variable,linetype = variable))  +
@@ -319,14 +323,15 @@ densities_plot_A = ggplot(data_plot_a, aes(x=value, color = variable,linetype = 
 densities_plot_A + 
   labs(x = "A", y = "Density", color = "") +
   xlim(0.32, 1) +
-  scale_color_discrete(labels = c("A-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)"))+
+  #scale_color_discrete(labels = c("A-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)"))+
+  scale_color_manual(
+    values = c("#D30000", "#545387", "#8470A1", "#A68FC0"),
+    labels = c("A-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)")  # Custom labels for the legend
+  ) +
   guides(linetype = "none")
 
-# cant menores a 0.33
-sapply(1:ncol(folds_a), function(x) nrow(folds_a[folds_a[,x]<0.33,]))
-
-#H
-folds_h = graph_data(df,predichos_h)
+ 
+# Plot for H
 data_plot_h = plot_data(folds_h,"none")
 
 densities_plot_H = ggplot(data_plot_h, aes(x=value, color = variable,linetype = variable))  +
@@ -335,36 +340,17 @@ densities_plot_H = ggplot(data_plot_h, aes(x=value, color = variable,linetype = 
 densities_plot_H + 
   labs(x = "H", y = "Density", color = "") +
   # xlim(0.32, 1) +
-  scale_color_discrete(labels = c("H-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)"))+
+#  scale_color_discrete(labels = c("H-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)"))+
+  scale_color_manual(
+    values = c("#D30000", "#545387", "#8470A1", "#A68FC0"),
+    labels = c("A-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)")  # Custom labels for the legend
+  ) +
   guides(linetype = "none")
 
 
-#MPI  HXA
-
+# Plot for MPI  HXA
 
 # Y-hat A*H
-View(graph_data(df,predichos_a))
-View(graph_data(df,predichos10))
-
-A_hat = graph_data(df,predichos_a)
-A_hat = A_hat[,35:43]
-H_hat = graph_data(df,predichos_h)
-H_hat = H_hat[,35:43]
-MPI_hat = graph_data(df,predichos10)
-MPI_hat_hxa = A_hat * H_hat
-#MPI_hat_hxa$y_test = MPI_hat$y_test
-# colnames(MPI_hat_hxa)[1]  = "y_test"               
-# colnames(MPI_hat_hxa)[2] =  "yhat.pls_tc_hxa"          
-# colnames(MPI_hat_hxa)[3] ="yhat.beta_tc_cr_hxa"      
-# colnames(MPI_hat_hxa)[4] ="yhat.beta_tc_tree_cr_hxa" 
-# colnames(MPI_hat_hxa)[5] ="yhat.elastic_tc_hxa"      
-# colnames(MPI_hat_hxa)[6] ="yhat.beta_tc_ela_hxa"     
-# colnames(MPI_hat_hxa)[7] ="yhat.beta_tc_tree_ela_hxa"
-# colnames(MPI_hat_hxa)[8] ="yhat.xgb_tc_hxa"          
-# colnames(MPI_hat_hxa)[9] = "yhat.betaboost_tc_hxa"
-# MPI_hat_hxa$y_test = NULL
-View(MPI_hat_hxa)
-View(MPI_hat)
 
 data_plot_hxa = reshape2::melt(MPI_hat_hxa[,c(1,5,6,7)])
 
@@ -374,34 +360,88 @@ densities_plot = ggplot(data_plot_hxa, aes(x=value, color = variable,linetype = 
 densities_plot + 
   labs(x = "MPI (HxA)", y = "Density", color = "") +
   xlim(-.001, 1) +
-  scale_color_discrete(labels = c("HxA-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","a","b","c"))+
+  #scale_color_discrete(labels = c("HxA-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","a","b","c"))+
+  scale_color_manual(
+    values = c("#D30000", "#545387", "#8470A1", "#A68FC0"),
+    labels = c("A-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)")  # Custom labels for the legend
+  ) +
+  guides(linetype = "none")
+
+# Plot for MPI
+data_plot_mpi = plot_data(folds,"none")
+
+densities_plot_mpi = ggplot(data_plot_mpi, aes(x=value, color = variable,linetype = variable))  +
+  geom_density(lwd = 1) 
+
+densities_plot_mpi + 
+  labs(x = "H", y = "Density", color = "") +
+  xlim(-.001, 1) +
+  #  scale_color_discrete(labels = c("H-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)"))+
+  scale_color_manual(
+    values = c("#D30000", "#545387", "#8470A1", "#A68FC0"),
+    labels = c("A-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)")  # Custom labels for the legend
+  ) +
   guides(linetype = "none")
 
 
-################################################
-# Lineal
-################################################
-#A
-folds_a = graph_data(df,predichos_a)
-data_plot_a = plot_data(folds_a,"none")
-View(data_plot_a)
+# Boosting Methods --------------------------------------------------------
 
+plot_data = function(df, division){
+  
+  data_plot = df
+  
+  # choose methods by comment
+  
+  data_plot$yhat.pls_tc = NULL
+  data_plot$yhat.beta_tc_cr = NULL
+  data_plot$yhat.beta_tc_tree_cr = NULL
+  
+  data_plot$yhat.elastic_tc = NULL
+  data_plot$yhat.beta_tc_ela = NULL
+  data_plot$yhat.beta_tc_tree_ela= NULL
+  
+  #data_plot$yhat.xgb_tc = NULL
+  #data_plot$yhat.betaboost_tc = NULL
+  
+  ######################################
+  
+  if (division == "region"){
+    data_plot = data_plot[,c(3,34:ncol(data_plot))]
+    data_plot$year_trend = NULL  
+    data_plot = reshape2::melt(data_plot,id.vars = "region_Other")
+    
+    
+  } else {
+    data_plot = data_plot[,c(1,35:ncol(data_plot))]
+    data_plot = reshape2::melt(data_plot, id.vars = "iso_Other")
+    
+  }
+  
+  
+  return(data_plot)
+}
+
+
+# Plot for A
+data_plot_a = plot_data(folds_a,"none")
+ 
 densities_plot_A = ggplot(data_plot_a, aes(x=value, color = variable,linetype = variable))  +
   geom_density(lwd = 1) 
 
 densities_plot_A + 
   labs(x = "A", y = "Density", color = "") +
   xlim(0.32, 1) +
-  scale_color_discrete(labels = c("A-true","Linear-PLS","Beta-PLS","Beta-Tree-PLS"))+
+  #scale_color_discrete(labels = c("A-true","XGBoost","Betaboost"))+
+  scale_color_manual(
+    values = c("#D30000", "#D68EB0", "#EFB6C6"),
+    labels = c("A-true","XGBoost","Betaboost")  # Custom labels for the legend
+  ) +
   guides(linetype = "none")
 
-# cant menores a 0.33
-sapply(1:ncol(folds_a), function(x) nrow(folds_a[folds_a[,x]<0.33,]))
-
-#H
-folds_h = graph_data(df,predichos_h)
+ 
+# Plot for H
 data_plot_h = plot_data(folds_h,"none")
-View(data_plot_h)
+#unique(data_plot_h$variable)
 
 densities_plot_H = ggplot(data_plot_h, aes(x=value, color = variable,linetype = variable))  +
   geom_density(lwd = 1) 
@@ -409,154 +449,48 @@ densities_plot_H = ggplot(data_plot_h, aes(x=value, color = variable,linetype = 
 densities_plot_H + 
   labs(x = "H", y = "Density", color = "") +
   # xlim(0.32, 1) +
-  scale_color_discrete(labels = c("H-true","Linear-PLS","Beta-PLS","Beta-Tree-PLS"))+
+  #scale_color_discrete(labels = c("H-true","XGBoost","Betaboost"))+
+  scale_color_manual(
+    values = c("#D30000", "#D68EB0", "#EFB6C6"),
+    labels = c("A-true","XGBoost","Betaboost")  # Custom labels for the legend
+  ) +
   guides(linetype = "none")
 
 
-#MPI  HXA
+# Plot for MPI  HXA
 
 
-# Y-hat A*H
-View(graph_data(df,predichos_a))
-View(graph_data(df,predichos10))
-
-A_hat = graph_data(df,predichos_a)
-A_hat = A_hat[,35:43]
-H_hat = graph_data(df,predichos_h)
-H_hat = H_hat[,35:43]
-MPI_hat = graph_data(df,predichos10)
-MPI_hat_hxa = A_hat * H_hat
-#MPI_hat_hxa$y_test = MPI_hat$y_test
-# colnames(MPI_hat_hxa)[1]  = "y_test"               
-# colnames(MPI_hat_hxa)[2] =  "yhat.pls_tc_hxa"          
-# colnames(MPI_hat_hxa)[3] ="yhat.beta_tc_cr_hxa"      
-# colnames(MPI_hat_hxa)[4] ="yhat.beta_tc_tree_cr_hxa" 
-# colnames(MPI_hat_hxa)[5] ="yhat.elastic_tc_hxa"      
-# colnames(MPI_hat_hxa)[6] ="yhat.beta_tc_ela_hxa"     
-# colnames(MPI_hat_hxa)[7] ="yhat.beta_tc_tree_ela_hxa"
-# colnames(MPI_hat_hxa)[8] ="yhat.xgb_tc_hxa"          
-# colnames(MPI_hat_hxa)[9] = "yhat.betaboost_tc_hxa"
-# MPI_hat_hxa$y_test = NULL
-View(MPI_hat_hxa)
-View(MPI_hat)
-
-data_plot_hxa = reshape2::melt(MPI_hat_hxa[,c(1,2,3,4)])
-View(data_plot_hxa)
-
-densities_plot = ggplot(data_plot_hxa, aes(x=value, color = variable,linetype = variable))  +
-  geom_density(lwd = 1) 
-
-densities_plot + 
-  labs(x = "MPI (HxA)", y = "Density", color = "") +
-  xlim(-.001, 1) +
-  scale_color_discrete(labels = c("HxA-true","Linear-PLS","Beta-PLS","Beta-Tree-PLS"))+
-  guides(linetype = "none")
-
-# MPI
-
-folds = graph_data(df, predichos10)
-data_plot_all = plot_data(folds, "none")
-View(data_plot_all)
-unique(data_plot_all$variable)
-
-densities_plot = ggplot(data_plot_all, aes(x=value, color = variable,linetype = variable))  +
-  geom_density(lwd = 1) 
-
-densities_plot + 
-  labs(x = "MPI", y = "Density", color = "") +
-  xlim(-.001, 1) +
-  scale_color_discrete(labels = c("Ytrue","Linear-PLS","Beta-PLS","Beta-Tree-PLS"))+
-  guides(linetype = "none")
-
-
-
-################################################
-# Boost
-################################################
-#A
-folds_a = graph_data(df,predichos_a)
-data_plot_a = plot_data(folds_a,"none")
-unique(data_plot_a$variable)
-
-densities_plot_A = ggplot(data_plot_a, aes(x=value, color = variable,linetype = variable))  +
-  geom_density(lwd = 1) 
-
-densities_plot_A + 
-  labs(x = "A", y = "Density", color = "") +
-  xlim(0.32, 1) +
-  scale_color_discrete(labels = c("A-true","XGBoost","Betaboost"))+
-  guides(linetype = "none")
-
-# cant menores a 0.33
-sapply(1:ncol(folds_a), function(x) nrow(folds_a[folds_a[,x]<0.33,]))
-
-#H
-folds_h = graph_data(df,predichos_h)
-data_plot_h = plot_data(folds_h,"none")
-unique(data_plot_h$variable)
-
-densities_plot_H = ggplot(data_plot_h, aes(x=value, color = variable,linetype = variable))  +
-  geom_density(lwd = 1) 
-
-densities_plot_H + 
-  labs(x = "H", y = "Density", color = "") +
-  # xlim(0.32, 1) +
-  scale_color_discrete(labels = c("H-true","XGBoost","Betaboost"))+
-  guides(linetype = "none")
-
-
-#MPI  HXA
-
-
-# Y-hat A*H
-View(graph_data(df,predichos_a))
-View(graph_data(df,predichos10))
-
-A_hat = graph_data(df,predichos_a)
-A_hat = A_hat[,35:43]
-H_hat = graph_data(df,predichos_h)
-H_hat = H_hat[,35:43]
-MPI_hat = graph_data(df,predichos10)
-MPI_hat_hxa = A_hat * H_hat
-#MPI_hat_hxa$y_test = MPI_hat$y_test
-# colnames(MPI_hat_hxa)[1]  = "y_test"               
-# colnames(MPI_hat_hxa)[2] =  "yhat.pls_tc_hxa"          
-# colnames(MPI_hat_hxa)[3] ="yhat.beta_tc_cr_hxa"      
-# colnames(MPI_hat_hxa)[4] ="yhat.beta_tc_tree_cr_hxa" 
-# colnames(MPI_hat_hxa)[5] ="yhat.elastic_tc_hxa"      
-# colnames(MPI_hat_hxa)[6] ="yhat.beta_tc_ela_hxa"     
-# colnames(MPI_hat_hxa)[7] ="yhat.beta_tc_tree_ela_hxa"
-# colnames(MPI_hat_hxa)[8] ="yhat.xgb_tc_hxa"          
-# colnames(MPI_hat_hxa)[9] = "yhat.betaboost_tc_hxa"
-# MPI_hat_hxa$y_test = NULL
-View(MPI_hat_hxa)
-View(MPI_hat)
+# Y-hat A*H 
 
 data_plot_hxa = reshape2::melt(MPI_hat_hxa[,c(1,8,9)])
-unique(data_plot_hxa$variable)
-
+ 
 densities_plot = ggplot(data_plot_hxa, aes(x=value, color = variable,linetype = variable))  +
   geom_density(lwd = 1) 
 
 densities_plot + 
   labs(x = "MPI (HxA)", y = "Density", color = "") +
   xlim(-.001, 1) +
-  scale_color_discrete(labels = c("HxA-true","XGBoost","Betaboost"))+
+  #scale_color_discrete(labels = c("HxA-true","XGBoost","Betaboost"))+
+  scale_color_manual(
+    values = c("#D30000", "#D68EB0", "#EFB6C6"),
+    labels = c("A-true","XGBoost","Betaboost")  # Custom labels for the legend
+  ) +
   guides(linetype = "none")
 
 # MPI
 
-folds = graph_data(df, predichos10)
 data_plot_all = plot_data(folds, "none")
-View(data_plot_all)
-unique(data_plot_all$variable)
-
+ 
 densities_plot = ggplot(data_plot_all, aes(x=value, color = variable,linetype = variable))  +
   geom_density(lwd = 1) 
 
 densities_plot + 
   labs(x = "MPI", y = "Density", color = "") +
   xlim(-.001, 1) +
-  scale_color_discrete(labels = c("Ytrue","XGBoost","Betaboost"))+
+  #scale_color_discrete(labels = c("Ytrue","XGBoost","Betaboost"))+
+  scale_color_manual(
+    values = c("#D30000", "#D68EB0", "#EFB6C6"),
+    labels = c("A-true","XGBoost","Betaboost")  # Custom labels for the legend
+  ) +
   guides(linetype = "none")
 
