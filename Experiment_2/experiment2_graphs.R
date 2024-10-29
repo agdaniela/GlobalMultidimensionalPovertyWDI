@@ -204,14 +204,13 @@ densities_plot_A = ggplot(data_plot_a, aes(x=value, color = variable,linetype = 
 densities_plot_A + 
   labs(x = "A", y = "Density", color = "") +
   xlim(0.32, 1) +
-  #scale_y_discrete(labels = c("A-true","Linear-PLS","Beta-PLS","Beta-Tree-PLS"))+
-  scale_color_manual(
-    values = c("#D30000","#B2DCEB", "#68B5D2", "#4196B6"),
-    labels = c("A-true", "Linear-PLS", "Beta-PLS", "Beta-Tree-PLS")  # Custom labels for the legend
+  scale_color_discrete(labels = c("A-true","Linear-PLS","Beta-PLS","Beta-Tree-PLS"))+
+  scale_linetype_manual(
+    values = c("solid", "dashed", "dotted", "dotdash"),
+    labels = c("A-true", "Linear-PLS", "Beta-PLS", "Beta-Tree-PLS")
   ) +
-    guides(linetype = "none")
+  guides(color = guide_legend(title = ""), linetype = guide_legend(title = ""))
 
- 
 # Plot for H
 folds_h = folds_h_df2
 data_plot_h = plot_data(folds_h,"none")
@@ -220,13 +219,14 @@ densities_plot_H = ggplot(data_plot_h, aes(x=value, color = variable,linetype = 
   geom_density(lwd = 1) 
 
 densities_plot_H + 
+  xlim(-.001, 1) +
   labs(x = "H", y = "Density", color = "") +
-  scale_color_manual(
-    values = c("#D30000","#B2DCEB", "#68B5D2", "#4196B6"),
-    labels = c("A-true", "Linear-PLS", "Beta-PLS", "Beta-Tree-PLS")  # Custom labels for the legend
+  scale_color_discrete(labels = c("H-true","Linear-PLS","Beta-PLS","Beta-Tree-PLS"))+
+  scale_linetype_manual(
+    values = c("solid", "dashed", "dotted", "dotdash"),
+    labels = c("H-true", "Linear-PLS", "Beta-PLS", "Beta-Tree-PLS")
   ) +
-  #scale_color_discrete(labels = c("H-true","Linear-PLS","Beta-PLS","Beta-Tree-PLS"))+
-  guides(linetype = "none")
+  guides(color = guide_legend(title = ""), linetype = guide_legend(title = ""))
 
 
 # Plot for MPI  HXA
@@ -248,12 +248,12 @@ densities_plot = ggplot(data_plot_hxa, aes(x=value, color = variable,linetype = 
 densities_plot + 
   labs(x = "MPI (HxA)", y = "Density", color = "") +
   xlim(-.001, 1) +
-  #scale_color_discrete(labels = c("HxA-true","Linear-PLS","Beta-PLS","Beta-Tree-PLS"))+
-  scale_color_manual(
-    values = c("#D30000","#B2DCEB", "#68B5D2", "#4196B6"),
-    labels = c("A-true", "Linear-PLS", "Beta-PLS", "Beta-Tree-PLS")  # Custom labels for the legend
+  scale_color_discrete(labels = c("HxA-true","Linear-PLS","Beta-PLS","Beta-Tree-PLS"))+
+  scale_linetype_manual(
+    values = c("solid", "dashed", "dotted", "dotdash"),
+    labels = c("HxA-true", "Linear-PLS", "Beta-PLS", "Beta-Tree-PLS")
   ) +
-  guides(linetype = "none")
+  guides(color = guide_legend(title = ""), linetype = guide_legend(title = ""))
 
 # Plot for MPI
 
@@ -266,12 +266,12 @@ densities_plot = ggplot(data_plot_all, aes(x=value, color = variable,linetype = 
 densities_plot + 
   labs(x = "MPI", y = "Density", color = "") +
   xlim(-.001, 1) +
-  #scale_color_discrete(labels = c("Ytrue","Linear-PLS","Beta-PLS","Beta-Tree-PLS"))+
-  scale_color_manual(
-    values = c("#D30000","#B2DCEB", "#68B5D2", "#4196B6"),
-    labels = c("A-true", "Linear-PLS", "Beta-PLS", "Beta-Tree-PLS")  # Custom labels for the legend
+  scale_color_discrete(labels = c("Ytrue","Linear-PLS","Beta-PLS","Beta-Tree-PLS"))+
+  scale_linetype_manual(
+    values = c("solid", "dashed", "dotted", "dotdash"),
+    labels = c("Ytrue", "Linear-PLS", "Beta-PLS", "Beta-Tree-PLS")
   ) +
-  guides(linetype = "none")
+  guides(color = guide_legend(title = ""), linetype = guide_legend(title = ""))
 
 
 
@@ -323,12 +323,12 @@ densities_plot_A = ggplot(data_plot_a, aes(x=value, color = variable,linetype = 
 densities_plot_A + 
   labs(x = "A", y = "Density", color = "") +
   xlim(0.32, 1) +
-  #scale_color_discrete(labels = c("A-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)"))+
-  scale_color_manual(
-    values = c("#D30000", "#545387", "#8470A1", "#A68FC0"),
-    labels = c("A-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)")  # Custom labels for the legend
+  scale_color_discrete(labels = c("A-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)"))+
+  scale_linetype_manual(
+    values = c("solid", "dashed", "dotted", "dotdash"),
+    labels = c("A-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)")
   ) +
-  guides(linetype = "none")
+  guides(color = guide_legend(title = ""), linetype = guide_legend(title = ""))
 
  
 # Plot for H
@@ -338,14 +338,16 @@ densities_plot_H = ggplot(data_plot_h, aes(x=value, color = variable,linetype = 
   geom_density(lwd = 1) 
 
 densities_plot_H + 
+  xlim(-.001, 1) +
   labs(x = "H", y = "Density", color = "") +
   # xlim(0.32, 1) +
-#  scale_color_discrete(labels = c("H-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)"))+
-  scale_color_manual(
-    values = c("#D30000", "#545387", "#8470A1", "#A68FC0"),
-    labels = c("A-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)")  # Custom labels for the legend
+  scale_color_discrete(labels = c("H-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)"))+
+  scale_linetype_manual(
+    values = c("solid", "dashed", "dotted", "dotdash"),
+    labels = c("H-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)")
   ) +
-  guides(linetype = "none")
+  guides(color = guide_legend(title = ""), linetype = guide_legend(title = ""))
+
 
 
 # Plot for MPI  HXA
@@ -360,12 +362,13 @@ densities_plot = ggplot(data_plot_hxa, aes(x=value, color = variable,linetype = 
 densities_plot + 
   labs(x = "MPI (HxA)", y = "Density", color = "") +
   xlim(-.001, 1) +
-  #scale_color_discrete(labels = c("HxA-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","a","b","c"))+
-  scale_color_manual(
-    values = c("#D30000", "#545387", "#8470A1", "#A68FC0"),
-    labels = c("A-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)")  # Custom labels for the legend
+  scale_color_discrete(labels = c("HxA-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","a","b","c"))+
+  scale_linetype_manual(
+    values = c("solid", "dashed", "dotted", "dotdash"),
+    labels = c("HxA-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)")
   ) +
-  guides(linetype = "none")
+  guides(color = guide_legend(title = ""), linetype = guide_legend(title = ""))
+
 
 # Plot for MPI
 data_plot_mpi = plot_data(folds,"none")
@@ -376,12 +379,12 @@ densities_plot_mpi = ggplot(data_plot_mpi, aes(x=value, color = variable,linetyp
 densities_plot_mpi + 
   labs(x = "H", y = "Density", color = "") +
   xlim(-.001, 1) +
-  #  scale_color_discrete(labels = c("H-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)"))+
-  scale_color_manual(
-    values = c("#D30000", "#545387", "#8470A1", "#A68FC0"),
-    labels = c("A-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)")  # Custom labels for the legend
+  scale_color_discrete(labels = c("Y-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)"))+
+  scale_linetype_manual(
+    values = c("solid", "dashed", "dotted", "dotdash"),
+    labels = c("Y-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)")
   ) +
-  guides(linetype = "none")
+  guides(color = guide_legend(title = ""), linetype = guide_legend(title = ""))
 
 
 # Boosting Methods --------------------------------------------------------
@@ -431,12 +434,12 @@ densities_plot_A = ggplot(data_plot_a, aes(x=value, color = variable,linetype = 
 densities_plot_A + 
   labs(x = "A", y = "Density", color = "") +
   xlim(0.32, 1) +
-  #scale_color_discrete(labels = c("A-true","XGBoost","Betaboost"))+
-  scale_color_manual(
-    values = c("#D30000", "#D68EB0", "#EFB6C6"),
-    labels = c("A-true","XGBoost","Betaboost")  # Custom labels for the legend
+  scale_color_discrete(labels = c("A-true","XGBoost","Betaboost"))+
+  scale_linetype_manual(
+    values = c("solid", "dashed", "dotted", "dotdash"),
+    labels = c("A-true","XGBoost","Betaboost")
   ) +
-  guides(linetype = "none")
+  guides(color = guide_legend(title = ""), linetype = guide_legend(title = ""))
 
  
 # Plot for H
@@ -448,13 +451,14 @@ densities_plot_H = ggplot(data_plot_h, aes(x=value, color = variable,linetype = 
 
 densities_plot_H + 
   labs(x = "H", y = "Density", color = "") +
-  # xlim(0.32, 1) +
-  #scale_color_discrete(labels = c("H-true","XGBoost","Betaboost"))+
-  scale_color_manual(
-    values = c("#D30000", "#D68EB0", "#EFB6C6"),
-    labels = c("A-true","XGBoost","Betaboost")  # Custom labels for the legend
+  xlim(-.001, 1) +
+  scale_color_discrete(labels = c("H-true","XGBoost","Betaboost"))+
+  scale_linetype_manual(
+    values = c("solid", "dashed", "dotted", "dotdash"),
+    labels = c("H-true","XGBoost","Betaboost")
   ) +
-  guides(linetype = "none")
+  guides(color = guide_legend(title = ""), linetype = guide_legend(title = ""))
+
 
 
 # Plot for MPI  HXA
@@ -470,12 +474,13 @@ densities_plot = ggplot(data_plot_hxa, aes(x=value, color = variable,linetype = 
 densities_plot + 
   labs(x = "MPI (HxA)", y = "Density", color = "") +
   xlim(-.001, 1) +
-  #scale_color_discrete(labels = c("HxA-true","XGBoost","Betaboost"))+
-  scale_color_manual(
-    values = c("#D30000", "#D68EB0", "#EFB6C6"),
-    labels = c("A-true","XGBoost","Betaboost")  # Custom labels for the legend
+  scale_color_discrete(labels = c("HxA-true","XGBoost","Betaboost"))+
+  scale_linetype_manual(
+    values = c("solid", "dashed", "dotted", "dotdash"),
+    labels = c("HxA-true","XGBoost","Betaboost")
   ) +
-  guides(linetype = "none")
+  guides(color = guide_legend(title = ""), linetype = guide_legend(title = ""))
+
 
 # MPI
 
@@ -487,10 +492,11 @@ densities_plot = ggplot(data_plot_all, aes(x=value, color = variable,linetype = 
 densities_plot + 
   labs(x = "MPI", y = "Density", color = "") +
   xlim(-.001, 1) +
-  #scale_color_discrete(labels = c("Ytrue","XGBoost","Betaboost"))+
-  scale_color_manual(
-    values = c("#D30000", "#D68EB0", "#EFB6C6"),
-    labels = c("A-true","XGBoost","Betaboost")  # Custom labels for the legend
+  scale_color_discrete(labels = c("Ytrue","XGBoost","Betaboost"))+
+  scale_linetype_manual(
+    values = c("solid", "dashed", "dotted", "dotdash"),
+    labels = c("Ytrue","XGBoost","Betaboost")
   ) +
-  guides(linetype = "none")
+  guides(color = guide_legend(title = ""), linetype = guide_legend(title = ""))
+
 
