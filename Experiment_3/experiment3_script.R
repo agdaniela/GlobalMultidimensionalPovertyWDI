@@ -1,5 +1,5 @@
-source("dataframes.R")
-source("kfold_cv_selection.R")
+source("auxiliary_functions/dataframes.R")
+source("auxiliary_functions/kfold_cv_selection.R")
 boostrap <- function(in_sample, out_of_sample, ...){
   
   methods <- c("betaboost", "elasticnet", "betatree","xgboost")
@@ -84,14 +84,14 @@ boostrap <- function(in_sample, out_of_sample, ...){
 
 # Data preprocessing ------------------------------------------------------
 # Call dataframe of countries that have at least one MPI measure from 1990 to 2023
-file <- "bigdata_all_years.txt"
+file <- "Experiment_3/bigdata_all_years.txt"
 df <- read.delim(file, header = TRUE, sep = " ", dec = ".")
 # Convert ISO code, country names and years variables into factor
 df$iso <- as.factor(df$iso)
 df$country <- as.factor(df$country)
 df$year <- as.numeric(df$year)
 # Get all country ISO code in World Bank database
-regs <- read.csv("dataframes_regions.csv")[,1:2]
+regs <- read.csv("auxiliary_functions/dataframes_regions.csv")[,1:2]
 # Keep only countries that have an MPI measure
 regions <- regs[(regs$Country.Code %in% df$iso),]
 # Change regions colnames for merging
@@ -163,7 +163,7 @@ df.is <- df.is[,apply(df.is, 2, function(x) !any(is.na(x)))] # this is df1
 df.oos <- model.data[idxs,colnames(df.is)]
 
 # Model training and prediction -------------------------------------------
-B <- nrow(df.is) # Number of repetitions
+B <- 500 # Number of repetitions
 
 
 #parallel::mclapply(1:4, boostrap, in_sample = df.is, out_of_sample = df.oos, mc.cores = 4)
@@ -171,25 +171,29 @@ B <- nrow(df.is) # Number of repetitions
 library(doParallel)
 
 cores <- 26
-#create the cluster
 cl <- parallel::makeCluster(cores)
 
-#check cluster definition (optional)
-print(cl)
-#register it to be used by %dopar%
-doParallel::registerDoParallel(cl = cl)
+# 1. Pasar las rutas de librerías de tu sesión actual a todos los workers
+rutas_lib <- .libPaths()
+parallel::clusterCall(cl, function(x) .libPaths(x), rutas_lib)
 
-#check if it is registered (optional)
-foreach::getDoParRegistered()
-foreach::getDoParWorkers()
+# 2. Cargar paquetes y scripts auxiliares en cada worker
+parallel::clusterEvalQ(cl, {
+  library(betaboost)
+  library(mboost)
+  library(glmnet)
+  library(betareg)
+  library(xgboost)
+  source("auxiliary_functions/kfold_cv_selection.R")
+})
+
+doParallel::registerDoParallel(cl = cl)
 
 experiment_start <- Sys.time() 
 results <- foreach(i = 1:B) %dopar% {
   boostrap(in_sample = df.is, out_of_sample = df.oos)
 }
 experiment_end <- Sys.time()
-experiment_time <- difftime(experiment_end, experiment_start, units = "mins")
-experiment_time
 
 parallel::stopCluster(cl = cl)
 
