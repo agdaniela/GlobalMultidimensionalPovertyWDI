@@ -55,43 +55,51 @@ graph_data = function(df, lista){
 # Dataset 1 
 folds_df1 = graph_data(df_fold_1, predicted_mpi_df1)
 dist_mpi_df1 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_df1$y_test, from = 0,to = 1,)$y,density(na.omit(folds_df1[,x]),from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
+dist_mpi_df1 = dist_mpi_df1 /2 #normalize distances dividing by 2
 
 # Dataset 2   
 folds_df2 = graph_data(df_fold_2, predicted_mpi_df2)
 dist_mpi_df2 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_df2$y_test, from = 0,to = 1,)$y,density(folds_df2[,x],from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
+dist_mpi_df2 = dist_mpi_df2 /2 
 
 # Dataset 13
 folds_df13 = graph_data(df_fold_13, predicted_mpi_df13)
 dist_mpi_df13 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_df13$y_test, from = 0,to = 1,)$y,density(na.omit(folds_df13[,x]),from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
+dist_mpi_df13 = dist_mpi_df13 /2
 
 # Distances for A
 
 # Dataset 1
 folds_a_df1 = graph_data(df_fold_1, predicted_a_df1)
 dist_a_df1 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_a_df1$y_test, from = 0.3,to = 1,)$y,density(na.omit(folds_a_df1[,x]),from=0.3,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
+dist_a_df1 = dist_a_df1 /2 
 
 # Dataset 2
 folds_a_df2 = graph_data(df_fold_2, predicted_a_df2)
 dist_a_df2 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_a_df2$y_test, from = 0.3,to = 1,)$y,density(folds_a_df2[,x],from=0.3,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
+dist_a_df2 = dist_a_df2 / 2
 
 # Dataset 13 
 folds_a_df13 = graph_data(df_fold_13, predicted_a_df13)
 dist_a_df13 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_a_df13$y_test, from = 0.3,to = 1,)$y,density(na.omit(folds_a_df13[,x]),from=0.3,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
+dist_a_df13 = dist_a_df13 /2 
 
 # Distances for H
 
 # Dataset 1
 folds_h_df1 = graph_data(df_fold_1, predicted_h_df1)
 dist_h_df1 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_h_df1$y_test, from = 0,to = 1,)$y,density(na.omit(folds_h_df1[,x]),from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
+dist_h_df1 = dist_h_df1 /2
 
 # Dataset 2
 folds_h_df2 = graph_data(df_fold_2, predicted_h_df2)
 dist_h_df2 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_h_df2$y_test, from = 0,to = 1,)$y,density(na.omit(folds_h_df2[,x]),from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
+dist_h_df2 = dist_h_df2 / 2
 
 # Dataset 13
 folds_h_df13 = graph_data(df_fold_13, predicted_h_df13)
 dist_h_df13 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_h_df13$y_test, from = 0,to = 1,)$y,density(na.omit(folds_h_df13[,x]),from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
-
+dist_h_df13 = dist_h_df13 / 2
 
 tabla_exp2 = function(lista, df){
   results = data.frame()
